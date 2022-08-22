@@ -6,8 +6,10 @@ import csv
 import re
 # from email_validator import validate_email, EmailNotValidError
 # from pyisemail import is_email
-from validate_email import  validate_email_or_fail
 # from verify_email import verify_email
+from validate_email import  validate_email_or_fail
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 # Create your views here.
 def index(request):
@@ -71,7 +73,8 @@ def return_csv(request):
                         try:
                             # status = validate_email(row[email_coulmn_no], verify=True)
                             status = validate_email_or_fail(email_address=row[email_coulmn_no])
-                            # status = verify_email(row[email_coulmn_no], debug=True)
+                            # status = validate_email(row[email_coulmn_no])
+                            print("status", status)
                         except Exception as e:
                             print(e)
                             status = e.__class__.__name__
