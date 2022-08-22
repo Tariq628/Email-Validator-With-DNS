@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+.input-file-form{
+    height: 80vh;
+}
+{% endblock css %}
+
+{% block body %}
+
+<form id="post-form" class="input-file-form d-flex flex-column justify-content-center align-items-center">
+    <label for="formFileMultiple" class="form-label">Alert! it will accept only csv file</label>
+    <input class="w-75 form-control" type="file" id="formFileMultiple" multiple>
+    <button id="get-file-button" class="my-3 btn btn-primary">Update file</button>
+    <a href="{% static 'media/updated_file.csv' %}" id="download-file" class="my-3 btn btn-primary" download>Download file</a>
+  </form>
+  <div id="CSVTable"></div>
+  
+
+{% endblock body %}
+{% block js %}
+<script src="{% static '/js/index.js' %}" type="text/javascript"></script>
+{% endblock js %}
