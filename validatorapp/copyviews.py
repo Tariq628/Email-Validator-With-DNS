@@ -1,11 +1,12 @@
-from tkinter.messagebox import RETRY
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import csv
-from email_validator import validate_email, EmailNotValidError
 import re
-from django.contrib import messages
+import requests
+from validate_email import validate_email,  validate_email_or_fail
+
 # Create your views here.
 def index(request):
     return render(request, "index.html")
@@ -48,15 +49,28 @@ def return_csv(request):
                 csv_reader = csv.reader(read_f)
                 csv_writer = csv.writer(write_f)
                 for index, row in enumerate(csv_reader):
+                    print(row)
                     if index == 0:
                         for row_index, item in enumerate(row):
+                            pr
                             if item.lower() == 'email':
                                 email_coulmn_no = row_index
+                                break
                             else:
+                                print("esle")
                                 email_coulmn_no = 1
-                            
-                    if index != 0:                            
-                        status = isValid(row[email_coulmn_no])
+
+                    if index != 0:
+                        if index > 5:
+                            break
+                        try:
+                            # status = validate_email(row[email_coulmn_no], verify=True)
+                            # status = validate_email_or_fail(email_address=row[email_coulmn_no])
+                            status = requests.get(f'https://verify.gmass.co/verify?email={row[email_coulmn_no]}&key=34d8faa0-8a39-4603-8165-1aff86c538e0').json()['Status']
+                            print("status", status)
+                        except Exception as e:
+                            print(e)
+                            status = e.__class__.__name__
                     else:
                         status = 'Status'
                     print(index, row[email_coulmn_no])
@@ -64,10 +78,11 @@ def return_csv(request):
                     csv_writer.writerow(row)
         except Exception as e:
             if hasattr(e, 'message'):
-                print("Hi", e)
                 return JsonResponse({'message': e.message}, safe=False)
             else:
                 return JsonResponse({'message': "Something Went Wrong"}, safe=False)
     add_col_to_csv('csv_file.csv','static/media/updated_file.csv')
 
-    return JsonResponse({'message': 'Updated'}, safe=False)
+    return JsonResponse({'message': 'File updated! '}, safe=False)
+
+

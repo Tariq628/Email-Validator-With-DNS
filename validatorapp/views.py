@@ -4,12 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import csv
 import re
-# from email_validator import validate_email, EmailNotValidError
-# from pyisemail import is_email
-# from verify_email import verify_email
-from validate_email import  validate_email_or_fail
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+import requests
+from validate_email import validate_email,  validate_email_or_fail
 
 # Create your views here.
 def index(request):
@@ -60,27 +56,20 @@ def return_csv(request):
                                 email_coulmn_no = row_index
                                 break
                             else:
-                                print("esle")
                                 email_coulmn_no = 1
-                            
+
                     if index != 0:
-                        # bool_result_with_dns = is_email(row[email_coulmn_no], check_dns=True)
-                        # detailed_result_with_dns = is_email(row[email_coulmn_no], check_dns=True, diagnose=True)
-                        # status = isValid(row[email_coulmn_no])
-                        # status = is_email(row[email_coulmn_no], check_dns=True, diagnose=True)
-                        # if index > 50:
-                        #     break
+                        if index > 5:
+                            break
                         try:
                             # status = validate_email(row[email_coulmn_no], verify=True)
-                            status = validate_email_or_fail(email_address=row[email_coulmn_no])
-                            # status = validate_email(row[email_coulmn_no])
+                            # status = validate_email_or_fail(email_address=row[email_coulmn_no])
+                            status = requests.get(f'https://verify.gmass.co/verify?email={row[email_coulmn_no]}&key=34d8faa0-8a39-4603-8165-1aff86c538e0').json()['Status']
                             print("status", status)
                         except Exception as e:
-                            print(e)
                             status = e.__class__.__name__
                     else:
                         status = 'Status'
-                    print(index, row[email_coulmn_no])
                     row.append(status)
                     csv_writer.writerow(row)
         except Exception as e:
@@ -88,7 +77,7 @@ def return_csv(request):
                 return JsonResponse({'message': e.message}, safe=False)
             else:
                 return JsonResponse({'message': "Something Went Wrong"}, safe=False)
-    add_col_to_csv('csv_file.csv','static/media/updated_file.csv')
+    add_col_to_csv('csv_file.csv','updated_file.csv')
 
     return JsonResponse({'message': 'File updated! '}, safe=False)
 
