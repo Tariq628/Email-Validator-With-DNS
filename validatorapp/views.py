@@ -82,7 +82,7 @@ def return_csv(request):
             else:
                 return JsonResponse({'message': "Something Went Wrong"}, safe=False)
 
-    add_col_to_csv('csv_file.csv','updated_file.csv')
+    add_col_to_csv('csv_file.csv','static/media/updated_file.csv')
     return JsonResponse({'message': 'File updated! ', 'my_arr':my_arr}, safe=False)
 
 
