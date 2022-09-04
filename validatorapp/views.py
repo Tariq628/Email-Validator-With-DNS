@@ -42,6 +42,7 @@ def return_csv(request):
             return JsonResponse({'message': "Something Went Wrong"}, safe=False)
 
 
+    my_arr = []
     def add_col_to_csv(csvfile,fileout):
         try:
             with open(csvfile, 'r') as read_f, \
@@ -59,17 +60,20 @@ def return_csv(request):
                                 email_coulmn_no = 1
 
                     if index != 0:
-                        if index > 5:
+                        if index > 10:
                             break
                         try:
                             # status = validate_email(row[email_coulmn_no], verify=True)
-                            # status = validate_email_or_fail(email_address=row[email_coulmn_no])
-                            status = requests.get(f'https://verify.gmass.co/verify?email={row[email_coulmn_no]}&key=34d8faa0-8a39-4603-8165-1aff86c538e0').json()['Status']
+                            email = row[email_coulmn_no]
+                            status = isValid(email)
+                            if status == "Valid! ":
+                                status = validate_email_or_fail(email_address=row[email_coulmn_no])
                             print("status", status)
                         except Exception as e:
                             status = e.__class__.__name__
                     else:
                         status = 'Status'
+                    my_arr.append(f'The status of {row[email_coulmn_no]} is {status}')
                     row.append(status)
                     csv_writer.writerow(row)
         except Exception as e:
@@ -77,8 +81,8 @@ def return_csv(request):
                 return JsonResponse({'message': e.message}, safe=False)
             else:
                 return JsonResponse({'message': "Something Went Wrong"}, safe=False)
-    add_col_to_csv('csv_file.csv','updated_file.csv')
 
-    return JsonResponse({'message': 'File updated! '}, safe=False)
+    add_col_to_csv('csv_file.csv','updated_file.csv')
+    return JsonResponse({'message': 'File updated! ', 'my_arr':my_arr}, safe=False)
 
 

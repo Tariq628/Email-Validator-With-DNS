@@ -2,7 +2,7 @@
 {% load static %}
 {% block css %}
 .input-file-form{
-    height: 80vh;
+    {% comment %} height: 80vh; {% endcomment %}
 }
 {% endblock css %}
 
@@ -14,7 +14,7 @@
     <button id="get-file-button" class="my-3 btn btn-primary">Update file</button>
     <a href="{% static 'media/updated_file.csv' %}" id="download-file" class="my-3 btn btn-primary" download>Download file</a>
   </form>
-  <div id="CSVTable"></div>
+  <div class='d-flex flex-column justify-content-center align-items-center' id="CSVTable"></div>
   
 
 {% endblock body %}

@@ -16,9 +16,12 @@ function updateCSV() {
         </div>`
   )
   var file = $('#formFileMultiple').prop('files')[0];
+  console.log($('#formFileMultiple').prop('files'));
   var message = document.getElementById('message');
+  var show_blank = document.getElementById('CSVTable')
   var formData = new FormData();
   formData.append("the_post", file)
+  console.log(formData);
   $.ajax({
       url : "return-csv/", // the endpoint
       type : "POST", // http method
@@ -34,6 +37,9 @@ function updateCSV() {
           <strong>${json.message}</strong> Click on download button..
         </div>
           `
+          json.my_arr.forEach(element => {
+            show_blank.innerHTML += `<p>${element}</p>`
+          });
       },
 
       // handle a non-successful response
