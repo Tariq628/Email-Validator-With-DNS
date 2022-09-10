@@ -49,19 +49,15 @@ def return_csv(request):
                 csv_reader = csv.reader(read_f)
                 csv_writer = csv.writer(write_f)
                 for index, row in enumerate(csv_reader):
-                    print(row)
                     if index == 0:
                         for row_index, item in enumerate(row):
                             if item.lower() == 'email':
                                 email_coulmn_no = row_index
                                 break
                             else:
-                                print("esle")
                                 email_coulmn_no = 1
 
                     if index != 0:
-                        if index > 5:
-                            break
                         try:
                             # status = validate_email(row[email_coulmn_no], verify=True)
                             # status = validate_email_or_fail(email_address=row[email_coulmn_no])
